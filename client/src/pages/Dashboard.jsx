@@ -142,10 +142,9 @@ const Dashboard = () => {
             type="button"
             onClick={handleAiCommand}
             disabled={aiLoading}
-            className="px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center gap-2"
+            className="px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center justify-center"
           >
             {aiLoading ? <span className="animate-spin"><Sparkles size={18} /></span> : <Sparkles size={18} />}
-            <span>Ask AI</span>
           </button>
         </div>
         {aiError && <div className="text-red-500 text-sm mt-2">{aiError}</div>}

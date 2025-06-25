@@ -13,9 +13,6 @@ const AddTask = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [smartInput, setSmartInput] = useState('');
-  const [smartLoading, setSmartLoading] = useState(false);
-  const [smartError, setSmartError] = useState('');
 
   useEffect(() => {
     // Set default due date to tomorrow
@@ -77,39 +74,6 @@ const AddTask = () => {
     }
   };
 
-  const handleSmartAdd = async () => {
-    if (!smartInput.trim()) return;
-    setSmartLoading(true);
-    setSmartError('');
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/tasks/parse', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ input: smartInput })
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setFormData(prev => ({
-          ...prev,
-          title: data.title || prev.title,
-          dueDate: data.dueDate ? new Date(data.dueDate).toISOString().split('T')[0] : prev.dueDate,
-          description: prev.description + (data.time ? `\nTime: ${data.time}` : '')
-        }));
-        setSmartInput('');
-      } else {
-        setSmartError('Could not parse task. Try rephrasing.');
-      }
-    } catch (err) {
-      setSmartError('AI error. Try again.');
-    } finally {
-      setSmartLoading(false);
-    }
-  };
-
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-2xl mx-auto">
@@ -121,34 +85,6 @@ const AddTask = () => {
             <ArrowLeft size={24} />
           </button>
           <h1 className="text-4xl font-bold text-gray-900">Add New Task</h1>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
-          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-            Smart Add
-            <Sparkles className="text-orange-400" size={18} />
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={smartInput}
-              onChange={e => setSmartInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') handleSmartAdd(); }}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-              placeholder="e.g. Remind me to call John tomorrow at 3pm"
-              disabled={smartLoading}
-            />
-            <button
-              type="button"
-              onClick={handleSmartAdd}
-              disabled={smartLoading}
-              className="px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center gap-2"
-            >
-              {smartLoading ? <span className="animate-spin"><Sparkles size={18} /></span> : <Sparkles size={18} />}
-              <span>AI Fill</span>
-            </button>
-          </div>
-          {smartError && <div className="text-red-500 text-sm mt-2">{smartError}</div>}
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
