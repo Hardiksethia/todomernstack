@@ -87,13 +87,13 @@ const CompletedTasks = () => {
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">Completed Tasks</h1>
-        <p className="text-gray-600">{tasks.length} completed task{tasks.length !== 1 ? 's' : ''}</p>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Completed Tasks</h1>
+        <p className="text-gray-600 text-base sm:text-lg">{tasks.length} completed task{tasks.length !== 1 ? 's' : ''}</p>
       </div>
 
       {/* Filters Card */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-8 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-6">
           <h3 className="text-xl font-semibold text-gray-900">Filter Completed Tasks</h3>
           <button
             onClick={clearFilters}
@@ -103,7 +103,7 @@ const CompletedTasks = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Completion Date</label>
             <input
@@ -132,14 +132,14 @@ const CompletedTasks = () => {
 
       {/* Completed Tasks List Card */}
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100">
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-gray-900">Completed Tasks</h2>
+        <div className="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Completed Tasks</h2>
           <span className="text-sm text-gray-500">
             {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
           </span>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {filteredTasks.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-20 h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-4">

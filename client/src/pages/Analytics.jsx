@@ -71,12 +71,12 @@ const Analytics = () => {
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Analytics & Insights</h1>
-          <p className="text-gray-600">Visualize your productivity and task trends</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Analytics & Insights</h1>
+          <p className="text-gray-600 text-base sm:text-lg">Visualize your productivity and task trends</p>
         </div>
 
         {/* Analytics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-10">
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 flex flex-col items-center">
             <TrendingUp className="text-orange-500 mb-2" size={32} />
             <span className="text-3xl font-bold text-gray-900">{totalTasks}</span>
@@ -100,7 +100,7 @@ const Analytics = () => {
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 mb-10">
           {/* Pie Chart: Tasks by Priority */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 flex flex-col items-center">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Tasks by Priority</h2>

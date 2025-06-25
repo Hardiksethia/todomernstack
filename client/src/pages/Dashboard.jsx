@@ -168,14 +168,14 @@ const Dashboard = () => {
       </div>
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome back! 👋</h1>
-          <p className="text-gray-600">Here's what's happening with your tasks today</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Welcome back! 👋</h1>
+          <p className="text-gray-600 text-base sm:text-lg">Here's what's happening with your tasks today</p>
         </div>
         <Link
           to="/add-task"
-          className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center space-x-2"
+          className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 w-full sm:w-auto"
         >
           <Plus size={20} />
           <span>Add Task</span>
@@ -184,7 +184,7 @@ const Dashboard = () => {
 
       {/* Summary Cards */}
       {summary && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 mb-8">
           <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 border border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">

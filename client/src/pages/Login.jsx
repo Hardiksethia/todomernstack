@@ -52,9 +52,9 @@ const Login = ({ onLogin }) => {
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
       
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-md mx-auto">
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 backdrop-blur-sm">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -93,16 +93,16 @@ const ActivityLog = () => {
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-2xl mx-auto">
-        <div className="flex items-center space-x-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-8 gap-2 sm:gap-0">
           <button
             onClick={() => navigate(-1)}
-            className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100"
+            className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 w-max"
           >
             <ArrowLeft size={24} />
           </button>
-          <h1 className="text-4xl font-bold text-gray-900">Activity Log</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2 sm:mt-0">Activity Log</h1>
         </div>
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-8">
           <h2 className="text-2xl font-semibold mb-6 text-orange-600">{taskTitle}</h2>
           {/* Filter Buttons */}
           <div className="flex flex-wrap gap-2 mb-6">

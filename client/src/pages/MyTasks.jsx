@@ -142,19 +142,19 @@ const MyTasks = () => {
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">My Tasks</h1>
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">My Tasks</h1>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
           <button
             onClick={() => setShowCalendar(true)}
-            className="p-3 rounded-full bg-gradient-to-r from-orange-100 to-red-100 hover:from-orange-200 hover:to-red-200 border border-orange-200 shadow text-orange-600 hover:text-orange-800 transition-all"
+            className="p-3 rounded-full bg-gradient-to-r from-orange-100 to-red-100 hover:from-orange-200 hover:to-red-200 border border-orange-200 shadow text-orange-600 hover:text-orange-800 transition-all w-full sm:w-auto"
             title="Show Calendar"
           >
             <CalendarIcon size={24} />
           </button>
           <Link
             to="/add-task"
-            className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center space-x-2"
+            className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 w-full sm:w-auto"
           >
             <Plus size={20} />
             <span>Add Task</span>
@@ -163,7 +163,7 @@ const MyTasks = () => {
       </div>
 
       {/* Search and Filters Card */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-8 mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:space-x-4 mb-6 gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -183,7 +183,7 @@ const MyTasks = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
             <input
