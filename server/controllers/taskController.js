@@ -21,7 +21,15 @@ exports.createTask = async (req, res) => {
         {
           action: 'created',
           timestamp: new Date(),
-          user: req.user._id
+          user: req.user._id,
+          details: {
+            title,
+            description,
+            dueDate,
+            priority,
+            status,
+            category
+          }
         }
       ]
     });
@@ -59,20 +67,68 @@ exports.updateTask = async (req, res) => {
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
     const { title, description, dueDate, priority, status, category } = req.body;
-    task.title = title || task.title;
-    task.description = description || task.description;
-    task.dueDate = dueDate || task.dueDate;
-    task.priority = priority || task.priority;
-    task.status = status || task.status;
-    task.category = category || task.category;
-
-    // Add activity log entry
-    task.activityLog.push({
-      action: 'updated',
-      timestamp: new Date(),
-      user: req.user._id
-    });
-
+    const changes = [];
+    if (title && title !== task.title) {
+      changes.push({
+        action: 'title_changed',
+        details: { from: task.title, to: title }
+      });
+      task.title = title;
+    }
+    if (description && description !== task.description) {
+      changes.push({
+        action: 'description_changed',
+        details: { from: task.description, to: description }
+      });
+      task.description = description;
+    }
+    if (dueDate && dueDate !== task.dueDate.toISOString()) {
+      changes.push({
+        action: 'dueDate_changed',
+        details: { from: task.dueDate, to: dueDate }
+      });
+      task.dueDate = dueDate;
+    }
+    if (priority && priority !== task.priority) {
+      changes.push({
+        action: 'priority_changed',
+        details: { from: task.priority, to: priority }
+      });
+      task.priority = priority;
+    }
+    if (status && status !== task.status) {
+      changes.push({
+        action: 'status_changed',
+        details: { from: task.status, to: status }
+      });
+      task.status = status;
+    }
+    if (category && category !== task.category) {
+      changes.push({
+        action: 'category_changed',
+        details: { from: task.category, to: category }
+      });
+      task.category = category;
+    }
+    // Add a general update log if there were any changes
+    if (changes.length > 0) {
+      changes.forEach(change => {
+        task.activityLog.push({
+          action: change.action,
+          timestamp: new Date(),
+          user: req.user._id,
+          details: change.details
+        });
+      });
+    } else {
+      // If no field changed, log a generic update
+      task.activityLog.push({
+        action: 'updated',
+        timestamp: new Date(),
+        user: req.user._id,
+        details: null
+      });
+    }
     const updated = await task.save();
     res.json(updated);
   } catch (err) {
@@ -90,7 +146,15 @@ exports.deleteTask = async (req, res) => {
     task.activityLog.push({
       action: 'deleted',
       timestamp: new Date(),
-      user: req.user._id
+      user: req.user._id,
+      details: {
+        title: task.title,
+        description: task.description,
+        dueDate: task.dueDate,
+        priority: task.priority,
+        status: task.status,
+        category: task.category
+      }
     });
     await task.save();
 

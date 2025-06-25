@@ -37,7 +37,8 @@ const taskSchema = new mongoose.Schema({
     {
       action: { type: String, required: true },
       timestamp: { type: Date, default: Date.now },
-      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      details: { type: Object, default: null }
     }
   ]
 }, { timestamps: true });
