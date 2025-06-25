@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #ff6f61;
+      background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 3rem;
+      width: 100%;
+      max-width: 450px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 2rem;
+      color: #222;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .login-btn {
+      background-color: #ff6f61;
+      color: white;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .login-btn:hover {
+      background-color: #e3574b;
+    }
+
+    .bottom-text {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .bottom-text a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .bottom-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Sign In</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="text" id="username" placeholder="Enter Username" required />
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Enter Password" required />
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="remember" />
+        <label for="remember">Remember Me</label>
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+    <div class="bottom-text">
+      Don’t have an account? <a href="register.html">Create One</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(data.message || 'Login failed');
+      }
+    });
+  </script>
+</body>
+</html>

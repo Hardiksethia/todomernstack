@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Task</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body { margin: 0; display: flex; font-family: 'Segoe UI', sans-serif; background-color: #f7f7f7; }
+    .sidebar {
+      width: 220px;
+      background: #ff6f61;
+      color: #fff;
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    .sidebar h2 { margin-bottom: 2rem; }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-weight: 500;
+    }
+    .sidebar a:hover { text-decoration: underline; }
+    .main {
+      flex: 1;
+      padding: 2rem;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .top-bar h2 { margin: 0; }
+    form {
+      max-width: 500px;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    form input, form select, form textarea {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    form button {
+      background-color: #ff6f61;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #e65a4c;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>ToDo App</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="my-tasks.html">My Tasks</a>
+    <a href="completed.html">Completed</a>
+    
+    <a href="add-task.html">Add Task</a>
+    <a href="profile.html">Settings</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+
+  <div class="main">
+    <div class="top-bar">
+      <h2>Add New Task</h2>
+    </div>
+
+    <form id="taskForm">
+      <input type="text" id="title" placeholder="Task Title" required />
+      <textarea id="description" placeholder="Task Description" rows="4" required></textarea>
+      <input type="date" id="dueDate" required />
+      <select id="priority">
+        <option value="Low">Low</option>
+        <option value="Medium">Mid</option>
+        <option value="High">High</option>
+      </select>
+      <select id="status">
+        <option value="Not Started">Not Started</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+      <button type="submit">Create Task</button>
+    </form>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login first.');
+      window.location.href = 'login.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('taskForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const task = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        dueDate: document.getElementById('dueDate').value,
+        priority: document.getElementById('priority').value,
+        status: document.getElementById('status').value,
+      };
+
+      try {
+        const res = await fetch('http://localhost:5000/api/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(task)
+        });
+
+        if (res.ok) {
+          alert('Task created successfully!');
+          window.location.href = 'my-tasks.html';
+        } else {
+          const data = await res.json();
+          alert(data.message || 'Failed to create task');
+        }
+      } catch (err) {
+        console.error('Error creating task:', err);
+      }
+    });
+  </script>
+</body>
+</html>

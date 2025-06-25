@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f7f7;
+    }
+    .sidebar {
+      width: 220px;
+      background: #ff6f61;
+      color: #fff;
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    .sidebar h2 {
+      margin-bottom: 2rem;
+      font-size: 1.6rem;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-weight: 500;
+    }
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+    .main {
+      flex: 1;
+      padding: 2rem;
+    }
+    .form-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .btn {
+      width: 100%;
+      background-color: #ff6f61;
+      color: #fff;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>ToDo App</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="my-tasks.html">My Tasks</a>
+    <a href="completed.html">Completed</a>
+    
+    <a href="add-task.html">Add Task</a>
+    <a href="profile.html">Settings</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+  <div class="main">
+    <div class="form-container">
+      <h2>Edit Profile</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="New Password">
+      <button class="btn" onclick="updateProfile()">Update Profile</button>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login first.');
+      window.location.href = 'login.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+
+    async function fetchProfile() {
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        document.getElementById('username').value = data.username;
+        document.getElementById('email').value = data.email;
+      } catch (err) {
+        console.error('Failed to fetch user info', err);
+      }
+    }
+
+    async function updateProfile() {
+      const updated = {
+        username: document.getElementById('username').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value.trim()
+      };
+
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/update', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updated)
+        });
+
+        if (res.ok) {
+          alert('Profile updated successfully');
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('Failed to update profile.');
+        }
+      } catch (err) {
+        console.error('Error updating profile', err);
+        alert('Error updating profile');
+      }
+    }
+
+    fetchProfile();
+  </script>
+</body>
+</html>

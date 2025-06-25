@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Task</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f7f7;
+    }
+    .sidebar {
+      width: 220px;
+      background: #ff6f61;
+      color: #fff;
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    .sidebar h2 {
+      margin-bottom: 2rem;
+      font-size: 1.6rem;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-weight: 500;
+    }
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+    .main {
+      flex: 1;
+      padding: 2rem;
+    }
+    .form-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    input[type="text"], textarea, input[type="date"], select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .btn {
+      width: 100%;
+      background-color: #ff6f61;
+      color: #fff;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>ToDo App</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="my-tasks.html">My Tasks</a>
+    <a href="completed.html">Completed</a>
+    
+    <a href="add-task.html">Add Task</a>
+    <a href="profile.html">Settings</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+  <div class="main">
+    <div class="form-container">
+      <h2>Edit Task</h2>
+      <input type="text" id="title" placeholder="Task Title">
+      <textarea id="description" rows="5" placeholder="Task Description"></textarea>
+      <input type="date" id="dueDate">
+      <select id="priority">
+        <option value="Low">Low</option>
+        <option value="Medium">Mid</option>
+        <option value="High">High</option>
+      </select>
+      <select id="status">
+        <option value="Not Started">Not Started</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+      <button class="btn" onclick="updateTask()">Update Task</button>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login first.');
+      window.location.href = 'login.html';
+    }
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskId = urlParams.get('id');
+
+    async function fetchTask() {
+      try {
+        const res = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const task = await res.json();
+        document.getElementById('title').value = task.title;
+        document.getElementById('description').value = task.description;
+        document.getElementById('dueDate').value = new Date(task.dueDate).toISOString().split('T')[0];
+        document.getElementById('priority').value = task.priority;
+        document.getElementById('status').value = task.status;
+      } catch (err) {
+        console.error('Failed to fetch task', err);
+      }
+    }
+
+    async function updateTask() {
+      const updatedTask = {
+        title: document.getElementById('title').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        dueDate: new Date(document.getElementById('dueDate').value).toISOString(),
+        priority: document.getElementById('priority').value,
+        status: document.getElementById('status').value
+      };
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedTask)
+        });
+
+        if (res.ok) {
+          window.location.href = 'dashboard.html';
+        } else {
+          const errorText = await res.text();
+          console.error('Server response:', errorText);
+          alert('Failed to update task.');
+        }
+      } catch (err) {
+        alert('Error updating task.');
+        console.error(err);
+      }
+    }
+
+    fetchTask();
+  </script>
+</body>
+</html>
