@@ -16,7 +16,14 @@ exports.createTask = async (req, res) => {
       dueDate,
       priority,
       status,
-      category
+      category,
+      activityLog: [
+        {
+          action: 'created',
+          timestamp: new Date(),
+          user: req.user._id
+        }
+      ]
     });
     res.status(201).json(task);
   } catch (err) {
@@ -59,6 +66,13 @@ exports.updateTask = async (req, res) => {
     task.status = status || task.status;
     task.category = category || task.category;
 
+    // Add activity log entry
+    task.activityLog.push({
+      action: 'updated',
+      timestamp: new Date(),
+      user: req.user._id
+    });
+
     const updated = await task.save();
     res.json(updated);
   } catch (err) {
@@ -69,8 +83,18 @@ exports.updateTask = async (req, res) => {
 // @desc Delete task
 exports.deleteTask = async (req, res) => {
   try {
-    const task = await Task.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+    const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
     if (!task) return res.status(404).json({ message: 'Task not found' });
+
+    // Add activity log entry before deletion
+    task.activityLog.push({
+      action: 'deleted',
+      timestamp: new Date(),
+      user: req.user._id
+    });
+    await task.save();
+
+    await Task.deleteOne({ _id: req.params.id, user: req.user._id });
     res.json({ message: 'Task deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });

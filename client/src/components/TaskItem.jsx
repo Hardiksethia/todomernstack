@@ -157,7 +157,13 @@ const TaskItem = ({ task, onUpdate }) => {
             >
               <Edit size={18} />
             </Link>
-            
+            <Link
+              to={`/activity-log/${task._id}`}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+              title="View activity log"
+            >
+              <Clock size={18} />
+            </Link>
             <button
               onClick={() => setShowDeleteDialog(true)}
               className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
