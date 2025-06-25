@@ -13,7 +13,6 @@ const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 const ActivityLog = lazy(() => import('./pages/ActivityLog'));
-const Categories = lazy(() => import('./pages/Categories'));
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -99,7 +98,6 @@ function App() {
               <Route path="/profile" element={<Profile user={user} />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/activity-log/:id" element={<ActivityLog />} />
-              <Route path="/categories" element={<Categories />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </div>
