@@ -23,8 +23,8 @@ const Dashboard = () => {
 
       // Fetch summary and today's tasks in parallel
       const [summaryRes, todayRes] = await Promise.all([
-        fetch('http://localhost:5000/api/tasks/summary', { headers }),
-        fetch('http://localhost:5000/api/tasks/today', { headers })
+        fetch(`${process.env.REACT_APP_API_URL}/tasks/summary`, { headers }),
+        fetch(`${process.env.REACT_APP_API_URL}/tasks/today`, { headers })
       ]);
 
       if (summaryRes.ok) {
@@ -81,7 +81,7 @@ const Dashboard = () => {
     try {
       const results = await Promise.all(
         prompts.map(async prompt => {
-          const response = await fetch('http://localhost:5000/api/ai/command', {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/ai/command`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

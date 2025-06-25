@@ -70,7 +70,7 @@ const ActivityLog = () => {
   const fetchActivityLog = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {

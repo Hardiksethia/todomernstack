@@ -47,7 +47,7 @@ const TaskItem = ({ task, onUpdate }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/tasks/${task._id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks/${task._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const TaskItem = ({ task, onUpdate }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/tasks/${task._id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks/${task._id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

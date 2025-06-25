@@ -22,7 +22,7 @@ const CompletedTasks = () => {
   const fetchCompletedTasks = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

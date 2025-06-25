@@ -23,7 +23,7 @@ const EditTask = () => {
   const fetchTask = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -74,7 +74,7 @@ const EditTask = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
