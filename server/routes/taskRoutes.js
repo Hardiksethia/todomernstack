@@ -37,8 +37,6 @@ router.get('/:id', protect, getTaskById);
 router.put('/:id', protect, updateTask);
 router.delete('/:id', protect, deleteTask);
 
-router.post('/parse', protect, parseTaskInput);
-
 module.exports = router;
 
 
