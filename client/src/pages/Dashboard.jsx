@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Calendar, AlertTriangle, CheckCircle, Clock, TrendingUp, Target, Zap } from 'lucide-react';
+import { Plus, Calendar, AlertTriangle, CheckCircle, Clock, TrendingUp, Target, Zap, Sparkles } from 'lucide-react';
 import TaskItem from '../components/TaskItem';
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);
   const [todayTasks, setTodayTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState(null);
+  const [aiError, setAiError] = useState('');
 
   useEffect(() => {
     fetchDashboardData();
@@ -48,6 +52,64 @@ const Dashboard = () => {
     }
   };
 
+  const splitUserInput = (input) => {
+    // Try to detect 'Add X tasks:' or 'Delete X tasks:' or 'Edit X tasks:'
+    const match = input.match(/^(Add|Delete|Edit) \d+ tasks?:/i);
+    if (match) {
+      const actionPrefix = match[0].replace(/\d+ tasks?:/i, '').trim();
+      // Remove the leading 'Add 3 tasks:' part
+      const rest = input.replace(match[0], '').trim();
+      // Split the rest on semicolons or newlines
+      let parts = rest.split(/;|\n|\r/).map(s => s.trim()).filter(Boolean);
+      // Prepend the action to each part if not already present
+      parts = parts.map(p => (p.toLowerCase().startsWith(actionPrefix.toLowerCase()) ? p : `${actionPrefix}: ${p}`));
+      return parts; // Only return the split parts, not the original multi-action prompt
+    }
+    // Otherwise, split as before
+    let parts = input.split(/;|\n|\r|\d+\. /).map(s => s.trim()).filter(Boolean);
+    if (parts.length <= 1) return [input.trim()];
+    return parts;
+  };
+
+  const handleAiCommand = async () => {
+    if (!aiPrompt.trim()) return;
+    setAiLoading(true);
+    setAiError('');
+    setAiResult(null);
+    const prompts = splitUserInput(aiPrompt);
+    const token = localStorage.getItem('token');
+    try {
+      const results = await Promise.all(
+        prompts.map(async prompt => {
+          const response = await fetch('http://localhost:5000/api/ai/command', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ prompt })
+          });
+          if (response.ok) {
+            const data = await response.json();
+            return data.results;
+          } else {
+            return [{ type: 'error', error: 'AI could not process: ' + prompt }];
+          }
+        })
+      );
+      setAiResult(results.flat());
+      setAiPrompt('');
+      // Refresh dashboard data if any action is add/edit/delete
+      if (results.flat().some(r => ['add','edit','delete'].includes(r.type))) {
+        fetchDashboardData();
+      }
+    } catch (err) {
+      setAiError('AI error. Try again.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-8">
@@ -60,6 +122,52 @@ const Dashboard = () => {
 
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+      {/* AI Command Bar */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8 flex flex-col gap-2">
+        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          AI Command Center
+          <Sparkles className="text-orange-400" size={18} />
+        </label>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={aiPrompt}
+            onChange={e => setAiPrompt(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') handleAiCommand(); }}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+            placeholder="e.g. Add a task: title: Buy groceries, due date: Friday"
+            disabled={aiLoading}
+          />
+          <button
+            type="button"
+            onClick={handleAiCommand}
+            disabled={aiLoading}
+            className="px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center gap-2"
+          >
+            {aiLoading ? <span className="animate-spin"><Sparkles size={18} /></span> : <Sparkles size={18} />}
+            <span>Ask AI</span>
+          </button>
+        </div>
+        {aiError && <div className="text-red-500 text-sm mt-2">{aiError}</div>}
+        {aiResult && (
+          <div className="mt-4 bg-gradient-to-br from-orange-50 to-red-50 border border-orange-100 rounded-xl p-4">
+            <h3 className="font-semibold text-orange-700 mb-2">AI Result</h3>
+            <ul className="space-y-2 text-gray-800 text-sm">
+              {aiResult.map((r, i) => (
+                <li key={i}>
+                  {r.type === 'add' && <span>✅ Added task: <b>{r.title}</b></span>}
+                  {r.type === 'edit' && <span>✏️ Edited task: <b>{r.title}</b> {r.error && <span className="text-red-500">({r.error})</span>}</span>}
+                  {r.type === 'delete' && <span>🗑️ Deleted task: <b>{r.title}</b> {r.error && <span className="text-red-500">({r.error})</span>}</span>}
+                  {r.type === 'analytics' && (r.error
+                    ? <span>📊 {r.query}: <span className="text-red-500">{r.error}</span></span>
+                    : <span>📊 {r.query}: <b>{r.result}</b></span>)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -188,6 +296,6 @@ const Dashboard = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Dashboard; 

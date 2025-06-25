@@ -14,7 +14,10 @@ const {
   getTasksByCategory,
   getDatesWithTasks,
    getTaskSummary,
-   searchTasks
+   searchTasks,
+   suggestCategoryAPI,
+   parseTaskInput,
+   aiCommand
 } = require('../controllers/taskController');
 
 
@@ -26,8 +29,6 @@ router.get('/today', protect, getTodayTasks);
 router.get('/overdue', protect, getOverdueTasks);
 router.get('/upcoming', protect, getUpcomingTasks);
 router.get('/date/:date', protect, getTasksByDate);
-router.get('/categories', protect, getUserCategories);
-router.get('/category/:category', protect, getTasksByCategory);
 router.get('/dates-with-tasks', protect, getDatesWithTasks);
 router.get('/summary', protect, getTaskSummary);
 router.get('/search', protect, searchTasks);
@@ -36,8 +37,7 @@ router.get('/:id', protect, getTaskById);
 router.put('/:id', protect, updateTask);
 router.delete('/:id', protect, deleteTask);
 
-
-
+router.post('/parse', protect, parseTaskInput);
 
 module.exports = router;
 

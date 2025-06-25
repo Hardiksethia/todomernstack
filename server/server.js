@@ -32,5 +32,8 @@ app.use('/api/auth', authRoutes);
 const taskRoutes = require('./routes/taskRoutes');
 app.use('/api/tasks', taskRoutes);
 
+const aiRoutes = require('./routes/aiRoutes');
+app.use('/api/ai', aiRoutes);
+
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));

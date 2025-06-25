@@ -29,10 +29,6 @@ const taskSchema = new mongoose.Schema({
     enum: ['Not Started', 'In Progress', 'Completed'],
     default: 'Not Started'
   },
-  category: {
-    type: String,
-    default: 'General'
-  },
   activityLog: [
     {
       action: { type: String, required: true },
